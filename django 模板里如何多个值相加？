@@ -59,3 +59,32 @@ render(request, 'orders/order_list.html', {'order_list': [{'key': 1}, {'key': 2}
 
 最后应该就可以实现你的需求了，希望可以帮到你哈
 你不可以直接在view里面处理好再在模板里面引用吗？
+
+
+得到Django Model或Model实例的属性值
+作者:轻舞肥羊 日期:2012-10-23
+字体大小: 小 中 大
+ 
+有什么好方法得到django model或model instance 的属性值呢？也就是要取得这个类中所有的属性值。
+程序代码 程序代码
+
+from django.db import models
+class Musician(models.Model):
+    first_name = models.CharField()
+    last_name  = models.CharField()
+    instrument = models.CharField()
+
+第一种可以选择的方法，是利用 __dict__.keys()
+程序代码 程序代码
+
+m = Musician(first_name='Norah', last_name='Jones', instrument='piano')
+print m.__dict__.keys()
+#['last_name', 'instrument', 'first_name', 'id']
+
+第二种方法，利用 _meta.fields ，对类和具体的类实例都是可以用的。
+程序代码 程序代码
+
+print [f.name for f in m._meta.fields] #针对类实例的操作
+#['id', 'first_name', 'last_name', 'instrument']
+print [f.name for f in Musician._meta.fields]#针对类对象的操作
+#['id', 'first_name', 'last_name', 'instrument']
