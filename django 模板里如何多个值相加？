@@ -1,0 +1,61 @@
+https://segmentfault.com/q/1010000008919849
+models.py
+
+class Order(models.Model):
+    price_a = models.PositiveIntegerField(blank=True, null=True)
+    price_b = models.PositiveIntegerField(blank=True, null=True)
+    price_c = models.PositiveIntegerField(blank=True, null=True)
+
+views.py
+
+def order_list():
+    order_list = Order.objects.all()
+    return render(request, 'orders/order_list.html', {'order_list': order_list})
+模板：
+
+{% for order in order_list %}
+    price_* 可能是 None
+    这里想输出 price_a + price_b + price_b 的总和
+    下面这个写法没有用：
+    {{ price_a|add:price_b|add:price_c }}
+{% endfor %}
+求解，或者有没有其他的实现方法？
+根据你所述的需求，有两种解决办法：
+1，在views.py里面计算好之后再传到模板里面；
+2，自定义模板filters来实现，具体实现方式如下：
+
+第一步：在你项目的app目录下新建templatetags文件夹（该文件夹和你的views.py和models.py同级），并在该文件夹下新建__init__.py和add_value.py文件，目录结构如下：
+
+
+|-- views.py
+|-- models.py
+|templatetags
+    |-- __init__.py
+    |-- add_value.py
+第二步：编辑__init__.py和add_value.py文件。__init__.py文件为空即可，add_value.py文件内容如下：
+
+# coding:utf-8
+__author__ = 'Dell'
+from django import template
+
+register = template.Library()
+
+
+@register.filter(name='add_value')
+def add_value(values):
+    count = 0
+    # 这里的values就是你使用该标签时传入的参数，在这个例子里面values就是render的时候传给模板的order_list的值
+    # 所以这里可以根据你实际传入的值做处理
+    for v in values:
+        if v['key']:
+            count += int(v['key'])
+    return count
+第三步：在views.py里面：
+
+
+# 这里假设你order_list的值是[{'key': 1}, {'key': 2}, {'key': 3}]
+render(request, 'orders/order_list.html', {'order_list': [{'key': 1}, {'key': 2}, {'key': 3}]})
+第四步：在你的order_list.html模板里面加入{% load add_value %}，然后使用<p>{{ order_list|add_value }}</p>
+
+最后应该就可以实现你的需求了，希望可以帮到你哈
+你不可以直接在view里面处理好再在模板里面引用吗？
