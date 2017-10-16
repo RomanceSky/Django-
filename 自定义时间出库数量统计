@@ -1,0 +1,14 @@
+完整的代码：
+>>> listNum = []
+>>> from stock.models import *
+>>> leaveStockNum = leaveStockDetail.objects.values('quantity')
+>>> for i in range(len(leaveStockNum)):
+...     a = leaveStockNum[i].get('quantity')
+...     listNum.append(a)
+... 
+2017-10-16 18:29:48,590 DEBUG utils.execute Line:89 (0.006) QUERY = u'SELECT "stock_leavestockdetail"."quantity" FROM "stock_leavestockdetail"' - PARAMS = (); args=()
+>>> listNum
+[100, 120, 11, 1, 1, 1, 11, 1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 1, 11, 11, 11, 1, 11, 1, 11, 1, 11, 1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
+>>> sum(listNum)
+1384
+
