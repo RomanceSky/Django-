@@ -36,5 +36,18 @@
 [{'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 1}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, {'totalPrice': 2}, '...(remaining elements truncated)...']
 >>> objectList = salesOrder.objects.values('totalPrice').filter(createUser=lo)
 >>> 
+>>> objectList = salesOrder.objects.values('totalPrice').filter(createUser=lo)
+>>> list = []
+>>> for i in range(len(objectList)):
+...     totalPriceSum = objectList[i].get("totalPrice")
+...     list.append(totalPriceSum)
+... 
+2017-10-17 16:55:04,524 DEBUG utils.execute Line:89 (0.002) QUERY = u'SELECT "sales_salesorder"."totalPrice" FROM "sales_salesorder" WHERE "sales_salesorder"."createUser_id" = %s' - PARAMS = (1,); args=(1,)
+>>> list
+[2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 3, 1, 5, 4, 4, 5, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1]
+>>> sum(list)
+264
+>>> 
+
 完整代码如下：
 
