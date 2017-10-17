@@ -1,0 +1,63 @@
+django 按时间范围查询数据库
+转载 2013年11月28日 09:24:09
+从前台中获得时间范围，在django后台处理request中数据，完成format，按照范围调用函数查询数据库。
+ 介绍一个简单的功能，就是从web表单里获取用户指定的时间范围，然后在数据库中查询此时间范围内的数据。
+     数据库里的model举例是这样：
+[python] view plain copy
+ 
+  1. class book(models.Model):   
+  2.     name = models.CharField(max_length=50, unique=True)  
+  3.     date = models.DateTimeField()  
+  4.         
+  5.     def __unicode__(self): return self.name  
+
+        假设我们从表单获得的request.GET里面的时间范围最初是这样的：
+[python] view plain copy
+ 
+  1. request.GET = {'year_from': 2010, 'month_from': 1, 'day_from': 1,  
+  2.                'year_to':2013, 'month_to': 10, 'day_to': 1}  
+
+     由于model里保存的date类型是models.DateTimefield(),我们需要先把request里面的数据处理成datetime类型(这是django里响应代码的前半部分)：
+[python] view plain copy
+ 
+  1. import datetime  
+  2.   
+  3. def filter(request):  
+  4.     if 'year_from' and 'month_from' and 'day_from' and\  
+  5.             'year_to' and 'month_to' and 'day_to' in request.GET:  
+  6.         y = request.GET['year_from']  
+  7.         m = request.GET['month_from']  
+  8.         d = request.GET['day_from']  
+  9.         date_from = datetime.datetime(int(y), int(m), int(d), 0, 0)  
+  10.         y = request.GET['year_to']  
+  11.         m = request.GET['month_to']  
+  12.         d = request.GET['day_to']  
+  13.         date_to = datetime.datetime(int(y), int(m), int(d), 0, 0)  
+  14.     else:  
+  15.         print "error time range!"  
+
+
+        接下来就可以用获得的 date_from 和date_to作为端点筛选数据库了，需要用到__range函数,将上面代码加上数据库查询动作：
+[python] view plain copy
+ 
+  1. import datetime  
+  2.   
+  3. def filter(request):  
+  4.     if 'year_from' and 'month_from' and 'day_from' and\  
+  5.             'year_to' and 'month_to' and 'day_to' in request.GET:  
+  6.         y = request.GET['year_from']  
+  7.         m = request.GET['month_from']  
+  8.         d = request.GET['day_from']  
+  9.         date_from = datetime.datetime(int(y), int(m), int(d), 0, 0)  
+  10.         y = request.GET['year_to']  
+  11.         m = request.GET['month_to']  
+  12.         d = request.GET['day_to']  
+  13.         date_to = datetime.datetime(int(y), int(m), int(d), 0, 0)  
+  14.         book_list = book.objects.filter(date__range=(date_from, date_to))  
+  15.         print book_list  
+  16.     else:  
+  17.         print "error time range!"  
+[python] view plain copy
+ 
+  1.   
+
